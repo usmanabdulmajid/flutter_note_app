@@ -4,6 +4,7 @@ import 'package:flutternoteapp/models/note.dart';
 import 'package:flutternoteapp/utils/dbHelper.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 class AddNote extends StatefulWidget {
   final Note note;
   AddNote(this.note);

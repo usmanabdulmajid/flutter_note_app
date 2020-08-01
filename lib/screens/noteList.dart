@@ -58,7 +58,7 @@ class _NoteListState extends State<NoteList> {
                   return GestureDetector(
                     onTap: () async{
                       bool result = await Navigator.push(context, MaterialPageRoute(builder: (context){
-                        return ReadNote(snapshot.data[index]);
+                        return  ReadNote(snapshot.data[index]);
                       }));
                       if(result == true){
                         updateList();

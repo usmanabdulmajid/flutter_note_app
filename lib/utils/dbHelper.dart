@@ -52,7 +52,7 @@ class DbHelper{
 
   Future<int> updateNote(Note note) async {
     Database dbClient = await db;
-    var result = await dbClient.update(noteTable, note.toMap(), where: "$colId = ?", whereArgs: [colId]);
+    var result = await dbClient.update(noteTable, note.toMap(), where: "$colId = ?", whereArgs: [note.id]);
     return result;
   }
 

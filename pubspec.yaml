@@ -35,6 +35,7 @@ dependencies:
   path_provider: ^1.6.11
   intl: ^0.16.1
   flutter_slidable: ^0.5.5
+  fluttertoast: ^7.0.2
 
 dev_dependencies:
   curved_navigation_bar: ^0.3.1

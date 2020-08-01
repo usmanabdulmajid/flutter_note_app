@@ -27,31 +27,42 @@ class _ReadNoteState extends State<ReadNote> {
   }
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Reading"),
-      ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.create),
-          onPressed: () async{
-            bool result = await Navigator.push(context, MaterialPageRoute(builder: (context){
-              return AddNote(note);
-            }));
-            if(result == true){
-              updateList();
-            }
-          },
-        ),
-        body: Container(
-          padding: EdgeInsets.fromLTRB(30.0, 10.0, 10.0, 0.0),
-          child: ListView(
-            children: <Widget>[
-              Text(note.category),
-              SizedBox(height: 30.0,),
-              Text(note.text),
-            ],
+    return WillPopScope(
+      onWillPop: () {
+        Navigator.pop(context, true);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Reading"),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: (){
+              Navigator.pop(context, true);
+            },
           ),
-        )
+        ),
+          floatingActionButton: FloatingActionButton(
+            child: Icon(Icons.create),
+            onPressed: () async {
+              bool result = await Navigator.push(context, MaterialPageRoute(builder: (context){
+                return AddNote(note);
+              }));
+              if(result == true){
+                updateList();
+              }
+            },
+          ),
+          body: Container(
+            padding: EdgeInsets.fromLTRB(30.0, 10.0, 10.0, 0.0),
+            child: ListView(
+              children: <Widget>[
+                Text(note.category),
+                SizedBox(height: 30.0,),
+                Text(note.text),
+              ],
+            ),
+          )
+      ),
     );
   }
 }
