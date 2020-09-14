@@ -55,25 +55,30 @@ class CustomList extends StatelessWidget {
   CustomList({this.thumbnail, this.note, this.date, this.category});
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: EdgeInsets.symmetric(vertical: 10.0),
-      child: SizedBox(
-        height: 60.0,
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            thumbnail,
-            Expanded(
-              child: Padding(
-                padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
-                child: _TextDescription(
-                  note: note,
-                  category: category,
-                  date: date,
-                ),
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.symmetric(vertical: 10.0),
+        child: SizedBox(
+          height: 60.0,
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              SizedBox(
+                width: 10.0,
               ),
-            )
-          ],
+              thumbnail,
+              Expanded(
+                child: Padding(
+                  padding: EdgeInsets.fromLTRB(20.0, 0.0, 20.0, 0.0),
+                  child: _TextDescription(
+                    note: note,
+                    category: category,
+                    date: date,
+                  ),
+                ),
+              )
+            ],
+          ),
         ),
       ),
     );

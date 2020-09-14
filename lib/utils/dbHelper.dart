@@ -33,7 +33,7 @@ class DbHelper{
 
   Future<List<Note>> getNotes() async{
     Database dbClient = await db;
-    //check the order by letter you dumb ass
+    //check the order by letter you dum ass
     List<Map> map = await dbClient.query(noteTable, columns: [colId, colNote, colDate, colCategory]);
     List<Note> notes = [];
     if(map.length > 0){
@@ -42,6 +42,28 @@ class DbHelper{
       }
     }
     return notes;
+  }
+
+  Future<List<Note>> getFilteredNotes(String query) async {
+    Database dbClient = await db;
+    //check the order by letter you dum ass
+    List<Map> map = await dbClient.query(noteTable, columns: [colId, colNote, colDate, colCategory]);
+    List<Note> notes = [];
+    if(map.length > 0){
+      for(int i = 0; i < map.length; i++){
+        notes.add(Note.fromMpObject(map[i]));
+      }
+    }
+    List<Note> searchedNotes = [];
+    if(query != null && query.isNotEmpty){
+      for(int i = 0; i < notes.length; i++){
+        if(notes[i].text.toLowerCase().contains(query)){
+          searchedNotes.add(notes[i]);
+        }
+      }
+    }
+    return searchedNotes;
+
   }
 
   Future<int> insertNote(Note note) async {

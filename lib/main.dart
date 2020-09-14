@@ -1,9 +1,13 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_icons/flutter_icons.dart';
-import 'package:flutternoteapp/screens/noteList.dart';
-import 'package:flutternoteapp/screens/noteListView.dart';
+import 'package:flutternoteapp/styles/theme.dart';
+import 'package:flutternoteapp/ui/noteList.dart';
+import 'package:flutternoteapp/ui/noteListView.dart';
+import 'package:flutternoteapp/utils/note_notifier.dart';
+import 'package:flutternoteapp/utils/theme_notifier.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 
 void main() {
@@ -14,16 +18,29 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context)=> ThemeNotifier()),
+        ChangeNotifierProvider(create: (context)=> NoteNotifier(),)
+      ],
+      child: MatApp(),
+    );
+  }
+}
+
+class MatApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final themeNotifier = Provider.of<ThemeNotifier>(context);
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Flutter Demo',
-      theme: ThemeData(
-        primaryColor: Colors.blue,
-      ),
+      theme: themeNotifier.isDarkTheme == true ? ThemeStyle.darkTheme() : ThemeStyle.lightTheme(),
       home: NoteList(),
     );
   }
 }
+
 
 class MyHomePage extends StatefulWidget {
   MyHomePage({Key key, this.title}) : super(key: key);

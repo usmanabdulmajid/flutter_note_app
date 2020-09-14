@@ -5,16 +5,11 @@ import 'package:flutternoteapp/utils/dbHelper.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:intl/intl.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-class AddNote extends StatefulWidget {
+
+// ignore: must_be_immutable
+class AddNote extends StatelessWidget {
   final Note note;
   AddNote(this.note);
-  @override
-  _AddNoteState createState() => _AddNoteState(this.note);
-}
-
-class _AddNoteState extends State<AddNote> {
-  final Note note;
-  _AddNoteState(this.note);
   var dbHelper = DbHelper();
   TextEditingController controller = TextEditingController();
   @override
@@ -29,7 +24,12 @@ class _AddNoteState extends State<AddNote> {
                 fontWeight: FontWeight.bold
               ),),
               onTap: (){
-
+                Navigator.pop(context, true);
+                Fluttertoast.showToast(
+                  msg: "Note Not Saved",
+                  gravity: ToastGravity.BOTTOM,
+                  backgroundColor: Colors.black12,
+                );
               },
             )
         ),
@@ -41,7 +41,7 @@ class _AddNoteState extends State<AddNote> {
                   fontWeight: FontWeight.bold
                 ),),
                 onTap: (){
-                  _save();
+                  _save(context);
                 },
               )
           ),
@@ -71,12 +71,14 @@ class _AddNoteState extends State<AddNote> {
               Container(
                 //alignment: Alignment.bottomCenter,
                 child: ButtonBar(
+                  //add toast for each category
                   buttonPadding: EdgeInsets.only(left: 42.0),
                   children: <Widget>[
                     IconButton(
                       icon: Icon(Icons.do_not_disturb_on),
                       onPressed: (){
                         note.category = "Uncategorized";
+                        _showToast();
                       },
                     ),
                     IconButton(
@@ -84,13 +86,15 @@ class _AddNoteState extends State<AddNote> {
                       iconSize: 21.0,
                       onPressed: (){
                         note.category = "Work";
+                        _showToast();
                       },
                     ),
                     IconButton(
                       icon: Icon(Icons.home),
                       iconSize: 26.0,
                       onPressed: (){
-                        note.category = "Home";
+                        note.category = "Family Affair";
+                        _showToast();
                       },
                     ),
                     IconButton(
@@ -98,12 +102,14 @@ class _AddNoteState extends State<AddNote> {
                       iconSize: 20.0,
                       onPressed: (){
                         note.category = "Study";
+                        _showToast();
                       },
                     ),
                     IconButton(
                       icon: Icon(Icons.person),
                       onPressed: (){
                         note.category = "Personal";
+                        _showToast();
                       },
                     )
                   ],
@@ -118,7 +124,38 @@ class _AddNoteState extends State<AddNote> {
     note.text = controller.text;
   }
 
-  void _save() async{
+  void _showToast(){
+    Fluttertoast.showToast(
+      msg: note.category,
+      gravity: ToastGravity.CENTER,
+      timeInSecForIosWeb: 10,
+      backgroundColor: getCategoryColor(note.category),
+    );
+  }
+
+  Color getCategoryColor(String category){
+    switch (category){
+      case "Uncategorized":
+        return Colors.green;
+        break;
+      case "Personal":
+        return Colors.yellow;
+        break;
+      case "Work":
+        return Colors.purple;
+        break;
+      case "Study":
+        return Colors.red;
+        break;
+      case "Family Affair":
+        return Colors.indigo;
+        break;
+      default:
+        return Colors.green;
+    }
+  }
+
+  void _save(BuildContext context) async{
     Navigator.pop(context, true);
     note.date = DateFormat.yMMMd().format(DateTime.now());
     int result;
@@ -128,21 +165,19 @@ class _AddNoteState extends State<AddNote> {
       result = await dbHelper.insertNote(note);
     }
     if(result != 0){
-      _showAlertDialog("Status", "Note Saved Successfully");
+      Fluttertoast.showToast(
+        msg: "Note Saved",
+        gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.white30,
+      );
     } else{
-      _showAlertDialog("Status", "Problem Saving Note");
+      Fluttertoast.showToast(
+          msg: "Note Not Saved",
+          gravity: ToastGravity.BOTTOM,
+        backgroundColor: Colors.white30,
+      );
     }
 
   }
 
-  void _showAlertDialog(String title, String message){
-    AlertDialog alertDialog = AlertDialog(
-      title: Text(title),
-      content: Text(message),
-    );
-    showDialog(
-      context: context,
-      builder: (_) => alertDialog,
-    );
-  }
 }
