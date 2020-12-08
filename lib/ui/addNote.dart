@@ -95,6 +95,8 @@ class _AddNoteState extends State<AddNote> {
                         widget.note.category = "Work";
                         _showToast();
                       },
+
+
                     ),
                     IconButton(
                       icon: Icon(Icons.home),
