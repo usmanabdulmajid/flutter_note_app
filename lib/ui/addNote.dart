@@ -72,7 +72,7 @@ class _AddNoteState extends State<AddNote> {
                 ),
               ),
               Spacer(),
-              
+
 
               Container(
                 //alignment: Alignment.bottomCenter,
