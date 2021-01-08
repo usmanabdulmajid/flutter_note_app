@@ -1,15 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutternoteapp/models/note.dart';
-import 'package:flutternoteapp/ui/addNote.dart';
-import 'package:flutternoteapp/ui/noteListView.dart';
-import 'package:flutternoteapp/ui/readNote.dart';
+import 'package:flutternoteapp/screens/add_note_screen.dart';
+import 'file:///C:/Users/MAJID/AndroidStudioProjects/flutter_note_app-master/lib/components/noteListView.dart';
+import 'package:flutternoteapp/screens/read_note_screen.dart';
 import 'package:flutternoteapp/utils/dbHelper.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flushbar/flushbar.dart';
-import 'package:flutternoteapp/utils/note_list_search.dart';
-import 'package:flutternoteapp/utils/note_notifier.dart';
-import 'package:flutternoteapp/utils/popup_notifier.dart';
-import 'package:flutternoteapp/utils/theme_notifier.dart';
+import 'file:///C:/Users/MAJID/AndroidStudioProjects/flutter_note_app-master/lib/screens/note_search_screen.dart';
+import 'file:///C:/Users/MAJID/AndroidStudioProjects/flutter_note_app-master/lib/providers/note_notifier.dart';
+import 'file:///C:/Users/MAJID/AndroidStudioProjects/flutter_note_app-master/lib/providers/theme_notifier.dart';
 import 'package:provider/provider.dart';
 
 // ignore: must_be_immutable
@@ -18,14 +17,6 @@ class NoteList extends StatelessWidget {
   Future<List<Note>> notes;
   List<Note> note;
   int count;
-  @override
-  void initState(BuildContext context){
-    getUpdatedUi(context);
-  }
-  getUpdatedUi(BuildContext context){
-    final popupNotifier = Provider.of<PopupNotifier>(context);
-    popupNotifier.getEnableState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +27,7 @@ class NoteList extends StatelessWidget {
       appBar: AppBar(
         actions: <Widget>[
           IconButton(
-            onPressed: (){
+            onPressed: () {
               showSearch(context: context, delegate: NoteListSearch());
               print(count);
             },
@@ -54,10 +45,12 @@ class NoteList extends StatelessWidget {
               child: FloatingActionButton(
                 elevation: 0.0,
                 heroTag: null,
-                onPressed: (){
+                onPressed: () {
                   themeNotifier.switchTheme();
                 },
-                child: themeNotifier.isDarkTheme == true ? Icon(Icons.wb_sunny) : Icon(Icons.brightness_3),
+                child: themeNotifier.isDarkTheme == true
+                    ? Icon(Icons.wb_sunny)
+                    : Icon(Icons.brightness_3),
               ),
             ),
             Align(
@@ -66,10 +59,11 @@ class NoteList extends StatelessWidget {
                 elevation: 0.0,
                 heroTag: null,
                 onPressed: () async {
-                  bool result = await Navigator.push(context, MaterialPageRoute(builder: (context){
-                    return AddNote(Note("","","uncategorized"));
+                  bool result = await Navigator.push(context,
+                      MaterialPageRoute(builder: (context) {
+                    return AddNote(Note("", "", "uncategorized"));
                   }));
-                  if(result == true){
+                  if (result == true) {
                     //Do shit
                     noteNotifier.getNoteFromDb();
                   }
@@ -84,18 +78,19 @@ class NoteList extends StatelessWidget {
         padding: EdgeInsets.fromLTRB(5.0, 5.0, 5.0, 0.0),
         child: FutureBuilder(
           future: dbHelper.getNotes(),
-          builder: (context, snapshot){
-            if(snapshot.hasData){
+          builder: (context, snapshot) {
+            if (snapshot.hasData) {
               var note = snapshot.data;
               return ListView.builder(
                 itemCount: note.length,
-                itemBuilder: (context, index){
+                itemBuilder: (context, index) {
                   return GestureDetector(
-                    onTap: () async{
-                      bool result = await Navigator.push(context, MaterialPageRoute(builder: (context){
-                        return  ReadNote(snapshot.data[index]);
+                    onTap: () async {
+                      bool result = await Navigator.push(context,
+                          MaterialPageRoute(builder: (context) {
+                        return ReadNote(snapshot.data[index]);
                       }));
-                      if(result == true){
+                      if (result == true) {
                         //Do shit
                         noteNotifier.getNoteFromDb();
                       }
@@ -105,13 +100,13 @@ class NoteList extends StatelessWidget {
                       actionPane: SlidableDrawerActionPane(),
                       secondaryActions: <Widget>[
                         Card(
-
                           child: IconSlideAction(
                             caption: "Delete",
                             icon: Icons.delete,
-                            color: getCategoryColor(snapshot.data[index].category),
-                            onTap: (){
-                             _delete(snapshot.data[index], context);
+                            color:
+                                getCategoryColor(snapshot.data[index].category),
+                            onTap: () {
+                              _delete(snapshot.data[index], context);
                             },
                           ),
                         )
@@ -120,12 +115,17 @@ class NoteList extends StatelessWidget {
                         thumbnail: Container(
                           width: 5.0,
                           height: MediaQuery.of(context).size.height,
-                          color: getCategoryColor(snapshot.data[index].category),
+                          color:
+                              getCategoryColor(snapshot.data[index].category),
                         ),
                         note: snapshot.data[index].text,
-                        category: Text(snapshot.data[index].category, style: TextStyle(
-                          color: getCategoryColor(snapshot.data[index].category),
-                        ),),
+                        category: Text(
+                          snapshot.data[index].category,
+                          style: TextStyle(
+                            color:
+                                getCategoryColor(snapshot.data[index].category),
+                          ),
+                        ),
                         date: snapshot.data[index].date,
                       ),
                     ),
@@ -133,7 +133,7 @@ class NoteList extends StatelessWidget {
                 },
               );
             }
-            if(snapshot.data == null || snapshot.data.length == 0){
+            if (snapshot.data == null || snapshot.data.length == 0) {
               return Center(
                 child: CircularProgressIndicator(),
               );
@@ -145,17 +145,16 @@ class NoteList extends StatelessWidget {
     );
   }
 
-  void _delete(Note note, BuildContext context) async{
+  void _delete(Note note, BuildContext context) async {
     final noteNotifier = Provider.of<NoteNotifier>(context, listen: false);
     int result = await dbHelper.deleteNote(note.id);
-    if(result != 0){
+    if (result != 0) {
       _showFlushBar(context);
     }
     noteNotifier.getNoteFromDb();
-
   }
 
-  void _showFlushBar(BuildContext context){
+  void _showFlushBar(BuildContext context) {
     Flushbar(
       dismissDirection: FlushbarDismissDirection.HORIZONTAL,
       message: "Note Deleted",
@@ -163,8 +162,9 @@ class NoteList extends StatelessWidget {
       forwardAnimationCurve: Curves.fastLinearToSlowEaseIn,
     )..show(context);
   }
-  Color getCategoryColor(String category){
-    switch (category){
+
+  Color getCategoryColor(String category) {
+    switch (category) {
       case "Uncategorized":
         return Colors.green;
         break;

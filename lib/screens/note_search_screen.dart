@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:flutternoteapp/models/note.dart';
 import 'package:flutternoteapp/styles/theme.dart';
-import 'package:flutternoteapp/ui/noteListView.dart';
-import 'package:flutternoteapp/ui/readNote.dart';
-import 'package:flutternoteapp/utils/theme_notifier.dart';
+import 'file:///C:/Users/MAJID/AndroidStudioProjects/flutter_note_app-master/lib/components/noteListView.dart';
+import 'package:flutternoteapp/screens/read_note_screen.dart';
+import 'file:///C:/Users/MAJID/AndroidStudioProjects/flutter_note_app-master/lib/providers/theme_notifier.dart';
 import 'package:provider/provider.dart';
-import 'dbHelper.dart';
-import 'note_notifier.dart';
+import '../utils/dbHelper.dart';
+import '../providers/note_notifier.dart';
 
 class NoteListSearch extends SearchDelegate {
   NoteListSearch()
@@ -115,14 +115,16 @@ class NoteListSearch extends SearchDelegate {
                   );
                 },
               );
-            }
-            else if (snapshot.data == null || snapshot.data.length == 0) {
+            } else if (snapshot.data == null || snapshot.data.length == 0) {
               print(snapshot.data);
               return Center(
-                child: Text("No Note Found", style: TextStyle(
-                  fontSize: 26.0,
-                  fontWeight: FontWeight.bold,
-                ),),
+                child: Text(
+                  "No Note Found",
+                  style: TextStyle(
+                    fontSize: 26.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
               );
             }
             return Center(child: CircularProgressIndicator());
